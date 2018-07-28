@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-public class ApiApplication extends BroadleafBootServletContextInitializer {
+public class ApiApplication extends SpringBootServletInitializer {
 
     @Configuration
     @EnableBroadleafSiteRootAutoConfiguration
