@@ -7,6 +7,13 @@
         This is a simple web application with a source code organization
         based on the recommendations of the Application Developer's Guide.
     </description>
-    <absolute-ordering>
-    </absolute-ordering>
+    <absolute-ordering />
+
+    <context-param>
+        <param-name>listenerContextInitializerClass</param-name>
+        <param-value>com.community.api.ApiApplication</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.broadleafcommerce.common.web.boot.support.SpringBootBootstrappingServletContextListener</listener-class>
+    </listener>
 </web-app>
