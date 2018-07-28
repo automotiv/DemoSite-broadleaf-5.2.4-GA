@@ -45,6 +45,13 @@ public class CorePersistenceConfig {
     DataSource webStorageDS;
 	
 	@Lazy
+    @Autowired
+    @Qualifier("webEventDS")
+    DataSource webEventDS;
+	
+	
+	
+	@Lazy
     @Primary
     @Bean(name = "webDS", destroyMethod="")
 	public DataSource webDSDataSource() throws IllegalArgumentException, NamingException {
@@ -62,6 +69,12 @@ public class CorePersistenceConfig {
 	public DataSource webStorageDSDataSource() throws IllegalArgumentException, NamingException {
 		return lookup.getDataSource("jdbc/storage");
 	}
+	
+	@Lazy
+    @Bean(name = "webEventDS", destroyMethod="")
+	public DataSource webEventDSDataSource() throws IllegalArgumentException, NamingException {
+		return lookup.getDataSource("jdbc/event");
+	}
     
     
 
@@ -72,6 +85,7 @@ public class CorePersistenceConfig {
         sourceMap.put("jdbc/web", webDS);
         sourceMap.put("jdbc/webSecure", webSecureDS);
         sourceMap.put("jdbc/cmsStorage", webStorageDS);
+        sourceMap.put("jdbc/event", webEventDS);
         mapFactoryBean.setSourceMap(sourceMap);
 
         return mapFactoryBean;
