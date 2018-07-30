@@ -3,6 +3,7 @@ package com.community.api.configuration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.broadleafcommerce.profile.web.core.security.RestApiCustomerStateFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Log LOG = LogFactory.getLog(ApiSecurityConfig.class);
     
+    @Autowired
+	private AuthenticationEntryPoint authEntryPoint;
+    
     @Value("${asset.server.url.prefix.internal}")
     protected String assetServerUrlPrefixInternal;
 
@@ -46,13 +50,14 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         String user = "broadleafapi";
         auth.inMemoryAuthentication()
             .withUser(user)
-            .password(password)
+            .password("broadleafapi")
             .roles("USER");
         LOG.info(String.format("%n%n%nBasic auth configured with user %s and password: %s%n%n%n", user, password));
     }
     
    @Override
    public void configure(WebSecurity web) throws Exception {
+	   LOG.info("Web securtiy method :: " + web);
        web.ignoring()
            .antMatchers("/api/**/webjars/**",
                "/api/**/images/favicon-*",
@@ -66,10 +71,14 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .antMatcher("/api/**")
-            .httpBasic()
+            .httpBasic().authenticationEntryPoint(authEntryPoint)
             .and()
             .csrf().disable()
-            .sessionManagement()
+            .authorizeRequests()
+                .antMatchers("/api/**")
+                .authenticated()
+                .and()
+				.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .sessionFixation()
                 .none()
