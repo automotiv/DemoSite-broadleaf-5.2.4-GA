@@ -52,7 +52,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             .withUser(user)
             .password(password)
             .roles("USER");
-        LOG.info("authenticationManagerBean()" + authenticationManagerBean());
+        ///LOG.info("authenticationManagerBean()" + authenticationManagerBean());
         LOG.info(String.format("%n%n%nBasic auth configured with user %s and password: %s%n%n%n", user, password));
     }
     
