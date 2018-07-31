@@ -1,5 +1,7 @@
 package com.community.api.configuration;
 
+import javax.servlet.Filter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.broadleafcommerce.profile.web.core.security.RestApiCustomerStateFilter;
@@ -17,10 +19,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.channel.ChannelDecisionManagerImpl;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import java.util.UUID;
-
-import javax.servlet.Filter;
+import com.community.api.filter.EAccessAuthenticationFilter;
 
 /**
  * @author Elbert Bautista (elbertbautista)
@@ -51,9 +52,14 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
             .withUser(user)
             .password(password)
-            .roles("USER");
+            .authorities("USER");
         ///LOG.info("authenticationManagerBean()" + authenticationManagerBean());
         LOG.info(String.format("%n%n%nBasic auth configured with user %s and password: %s%n%n%n", user, password));
+    }
+    
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    	auth.inMemoryAuthentication().withUser("chandana").password("chandana").roles("USER");
     }
     
    @Override
@@ -77,6 +83,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .csrf().disable()
             .authorizeRequests()
+                .antMatchers("/api/**").hasAuthority("USER")
                 .antMatchers("/api/**")
                 .authenticated()
                 .and()
@@ -91,6 +98,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .requires(ChannelDecisionManagerImpl.ANY_CHANNEL)
             .and()
             .addFilterAfter(apiCustomerStateFilter(), RememberMeAuthenticationFilter.class);
+        http.addFilterBefore(new EAccessAuthenticationFilter(), BasicAuthenticationFilter.class);
     }
     
     @Bean
