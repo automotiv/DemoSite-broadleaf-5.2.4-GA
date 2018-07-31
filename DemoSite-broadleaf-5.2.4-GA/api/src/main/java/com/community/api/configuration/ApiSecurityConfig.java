@@ -70,7 +70,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	LOG.info("HTTP security");
+    	LOG.info("IN Configure Method");
         http
             .antMatcher("/api/**")
             .httpBasic()
@@ -78,8 +78,18 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .authorizeRequests()
                 .antMatchers("/api/**")
-                .authenticated()
+                .permitAll()
                 .and()
+				.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionFixation()
+                .none()
+                .enableSessionUrlRewriting(false)
+                .and()
+            .requiresChannel()
+                .anyRequest()
+                .requires(ChannelDecisionManagerImpl.ANY_CHANNEL)
+            .and()
             .addFilterAfter(apiCustomerStateFilter(), RememberMeAuthenticationFilter.class);
     }
     
