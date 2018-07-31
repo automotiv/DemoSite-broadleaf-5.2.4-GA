@@ -78,7 +78,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable()
             .authorizeRequests()
                 .antMatchers("/api/**")
-                .permitAll()
+                .authenticated()
                 .and()
 				.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
