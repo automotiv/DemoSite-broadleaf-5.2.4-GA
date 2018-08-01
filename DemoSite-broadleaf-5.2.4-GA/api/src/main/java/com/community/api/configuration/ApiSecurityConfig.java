@@ -79,7 +79,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     	LOG.info("IN Configure Method");
         http
             .antMatcher("/api/**")
-            .httpBasic()
+            .httpBasic()//.authenticationEntryPoint(authEntryPoint)
             .and()
             .csrf().disable()
             .authorizeRequests()
@@ -98,7 +98,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .requires(ChannelDecisionManagerImpl.ANY_CHANNEL)
             .and()
             .addFilterAfter(apiCustomerStateFilter(), RememberMeAuthenticationFilter.class);
-        http.addFilterBefore(new EAccessAuthenticationFilter(), BasicAuthenticationFilter.class);
+        http.formLogin();
     }
     
     @Bean
