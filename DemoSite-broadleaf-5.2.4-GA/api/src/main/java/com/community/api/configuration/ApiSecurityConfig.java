@@ -77,7 +77,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	LOG.info("IN Configure Method");
-        http
+        /*http
             .antMatcher("/api/**")
             .httpBasic()//.authenticationEntryPoint(authEntryPoint)
             .and()
@@ -97,7 +97,17 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .requires(ChannelDecisionManagerImpl.ANY_CHANNEL)
             .and()
-            .addFilterAfter(apiCustomerStateFilter(), RememberMeAuthenticationFilter.class);
+            .addFilterAfter(apiCustomerStateFilter(), RememberMeAuthenticationFilter.class);*/
+    	
+    	http
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers("/api/**").hasRole("USER")
+        .anyRequest().authenticated()
+        .and()
+        .httpBasic()
+        .and()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         
     }
     
